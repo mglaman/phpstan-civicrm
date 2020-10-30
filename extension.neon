@@ -1,4 +1,14 @@
 parameters:
+	scanFiles:
+		- vendor/civicrm/civicrm-core/Civi.php
 	scanDirectories:
-		- vendor/civicrm/civicrm-core/api
+        # Adding this to discovery causes an error with \Civi\API\Exception\NotImplementedException
+        # It errors on `require_once 'api/Exception.php';` as not found.
+		# - vendor/civicrm/civicrm-core/api
+		- vendor/civicrm/civicrm-core/Civi
 		- vendor/civicrm/civicrm-core/CRM
+		- vendor/civicrm/civicrm-core/ext
+		- vendor/civicrm/civicrm-core/extern
+		- vendor/civicrm/civicrm-core/install
+		- vendor/civicrm/civicrm-core/settings
+		- vendor/civicrm/civicrm-core/setup
