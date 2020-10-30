@@ -1,0 +1,33 @@
+name: Main
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    name: PHPUnit
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v2
+        with:
+            path: ${{ steps.composercache.outputs.dir }}
+            key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+            restore-keys: ${{ runner.os }}-composer-
+      - uses: shivammathur/setup-php@v2
+        with:
+            php-version: 7.3
+            extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, soap, intl, gd, exif, iconv
+            coverage: none
+            tools: composer:v1
+      - name: Setup problem matchers for PHPUnit
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Composer
+        run: composer install --no-suggest --no-suggest
+      - name: Run PHPUnit
+        run: ./vendor/bin/phpunit
