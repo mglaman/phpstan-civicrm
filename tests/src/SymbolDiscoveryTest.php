@@ -28,10 +28,25 @@ final class SymbolDiscoveryTest extends TestCase {
             __DIR__ . '/../fixtures/config/baseline.neon',
         ];
         $container = $containerFactory->create($tmpDir, $additionalConfigFiles, []);
-        $analyser = $container->getByType(Analyser::class);
-        assert($analyser instanceof Analyser);
         $fileHelper = $container->getByType(FileHelper::class);
         assert($fileHelper instanceof FileHelper);
+
+        $autoloadFiles = $container->getParameter('bootstrapFiles');
+        $this->assertContains(dirname(__DIR__, 2) . '/civicrm-autoloader.php', $autoloadFiles);
+        if ($autoloadFiles !== null) {
+            foreach ($autoloadFiles as $autoloadFile) {
+                $autoloadFile = $fileHelper->normalizePath($autoloadFile);
+                if (!is_file($autoloadFile)) {
+                    $this->fail('Autoload file not found');
+                }
+                (static function (string $file) use ($container): void {
+                    require_once $file;
+                })($autoloadFile);
+            }
+        }
+
+        $analyser = $container->getByType(Analyser::class);
+        assert($analyser instanceof Analyser);
 
         $file = $fileHelper->normalizePath($path);
         $errors = $analyser->analyse(
