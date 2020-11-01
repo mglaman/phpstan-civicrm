@@ -7,10 +7,13 @@ if ($container === NULL && !($container instanceof Container)) {
     throw new \PHPStan\ShouldNotHappenException('The autoloader did not receive the container.');
 }
 
-// @todo read civicrm.root
-
 $civicrmConfig = $container->getParameter('civicrm');
 $civicrmRoot = $civicrmConfig['root'];
+
+if (!file_exists($civicrmRoot . '/CRM/Core/ClassLoader.php')) {
+    throw new \RuntimeException('Could not locate "CRM/Core/ClassLoader.php" in CiviCRM root: ' . $civicrmRoot);
+}
+
 $include_path = '.' . PATH_SEPARATOR .
                 $civicrmRoot . PATH_SEPARATOR .
                 $civicrmRoot . DIRECTORY_SEPARATOR . 'packages' . PATH_SEPARATOR .
