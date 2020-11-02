@@ -2,6 +2,10 @@
 
 Extension for [PHPStan](https://phpstan.org) to allow static analysis of CiviCRM.
 
+## Sponsors
+
+The PHPStan CiviCRM was created through a sponsorship by [Megaphone Technology Consulting](https://megaphonetech.com/) 🎉
+
 ## Configuration
 
 To use the PHPStan CiviCRM extension, you must define the root location of CiviCRM.
